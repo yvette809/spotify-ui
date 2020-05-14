@@ -2,6 +2,8 @@
 
 This project is the first build week project of Strive School to practise our skills on boostrap,css and js.
 
+[Click Here To See Demo](https://spotify.imfast.io/)
+
 ### TEAM MEMBERS
 
 - Solomon Ugwuanyi
