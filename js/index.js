@@ -829,7 +829,7 @@ function loginPage() {
     innerText: "LOG IN",
     style: "margin:20px 0px;height:50px;width:200px;",
     onclick: function () {
-      start();
+      window.location.reload();
     },
   });
   let forgot = addElement(form, "p", {
