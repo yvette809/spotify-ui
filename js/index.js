@@ -175,6 +175,7 @@ function toggleMobilePlayer() {
     let button = addElement(controlsContainer, "button", {
       className: `controls-button ${control.text}`,
       name: control.text,
+      id: control.text + "-" + "fs",
       onclick: function () {
         if (control.text === "Play") {
           play();
@@ -193,6 +194,7 @@ function toggleMobilePlayer() {
       },
     });
     let icon = addElement(button, "i", {
+      id: "big",
       className:
         control.text === "Play"
           ? loading
@@ -201,7 +203,7 @@ function toggleMobilePlayer() {
             ? icons.pause
             : icons.play
           : control.icon,
-      style: `font-size:${control.text === "Play" ? "5em" : "2em"}`,
+      style: `font-size:${control.text === "Play" ? "50pt" : "20pt"}`,
     });
   }
   return playerContainer;
@@ -234,9 +236,13 @@ function initializePlayer() {
 async function switchSong(index) {
   loading = true;
   let playButtons = document.querySelectorAll(".Play");
+  const copyStyle = playButtons;
   for (button of playButtons) {
     button.firstChild.className = icons.spinner;
-    button.firstChild.style = "color:#1ed760;font-size:20pt;";
+    button.firstChild.style =
+      button.firstChild.id === "big"
+        ? "color:#1ed760;font-size:50pt;"
+        : "color:#1ed760;font-size:30pt;";
   }
   if (index >= 0 && index <= album.songs.length - 1) {
     let currentTime = document.querySelector("#current-time");
@@ -269,6 +275,12 @@ async function switchSong(index) {
       play();
       isPlaying ? player.play() : play();
       loading = false;
+      for (let i = 0; i < playButtons.length; i++) {
+        playButtons[i].firstChild.className = isPlaying
+          ? icons.pause
+          : icons.play;
+        playButtons[i].style.fontSize = "30pt";
+      }
     };
   }
 }
@@ -280,6 +292,7 @@ function play() {
     button.firstChild.className = isPlaying
       ? "fas fa-play-circle"
       : "fas fa-pause-circle";
+    button.firstChild.style.color = "white";
   }
   let songTitles = document.querySelectorAll(".song-info-text");
   for (let i = 0; i < songTitles.length; i++) {
@@ -487,7 +500,7 @@ function playerControls(container) {
     });
     let icon = addElement(button, "i", {
       className: control.icon,
-      style: `font-size:${control.text === "Play" ? "20pt" : "10pt"}`,
+      style: `font-size:${control.text === "Play" ? "30pt" : "10pt"}`,
     });
   }
   let progressContainer = addElement(controller, "div", {
