@@ -103,47 +103,47 @@ const album = {
   details: "11 songs, 40 min",
   songs: [
     {
-      name: "Procession-Remastered 2011", //
+      name: "Procession", //
       length: "1:13",
     },
     {
-      name: "Father To Son-Remastered 2011", //
+      name: "Father To Son", //
       length: "6:14",
     },
     {
-      name: "White Queen (As it Began)-Remastered 2011", //
+      name: "White Queen (As it Began)", //
       length: "1:13",
     },
     {
-      name: "Some Day One Day (As it Began)-Remastered 2011", //
+      name: "Some Day One Day (As it Began)", //
       length: "4:22",
     },
     {
-      name: "The Loser In The End-Remastered 2011", //
+      name: "The Loser In The End", //
       length: "1:13",
     },
     {
-      name: "Ogre Battle-Remastered 2011", //
+      name: "Ogre Battle", //
       length: "1:13",
     },
     {
-      name: "The Fairy Feller's Master Stroke-Remastered 2011", //
+      name: "The Fairy Feller's Master Stroke", //
       length: "1:13",
     },
     {
-      name: "Nevermore-Remastered 2011", //
+      name: "Nevermore", //
       length: "1:13",
     },
     {
-      name: "The March Of the Black Queen-Remastered 2011 Mix", //
+      name: "The March Of the Black Queen Mix", //
       length: "1:13",
     },
     {
-      name: "Funny How Love Is-Remastered 2011", //
+      name: "Funny How Love Is", //
       length: "1:13",
     },
     {
-      name: "Seven Seas of Rhye-Remastered 2011", //
+      name: "Seven Seas of Rhye", //
       length: "1:13",
     },
   ],

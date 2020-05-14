@@ -9,6 +9,7 @@ const icons = {
   backward: "fas fa-backward",
   forward: "fas fa-forward",
   play: "far fa-play-circle",
+  pause: "far fa-pause-circle",
   repeat: "fas fa-redo-alt",
   volume: "fas fa-volume-up",
   desktop: "fas fa-desktop",
@@ -17,4 +18,5 @@ const icons = {
   apple: "fab fa-apple",
   lock: "fas fa-lock",
   more: "fas fa-ellipsis-h",
+  fullscreen: "fas fa-compress",
 };

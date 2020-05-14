@@ -11,7 +11,10 @@ let isMuted = false;
 let songIndex = 0;
 window.onload = function () {
   this.start("Home");
+  createControllers();
+  initializePlayer(0);
 };
+
 window.onresize = updateScreenSizes;
 function toggleMobileMenu() {
   let root = document.getElementById("root");
@@ -41,7 +44,9 @@ function toggleMobileMenu() {
     { text: "Search", icon: icons.search },
     { text: "Your Library", icon: icons.library },
   ];
-  let ul = addElement(menuContainer, "ul", { className: "side-bar-list" });
+  let ul = addElement(menuContainer, "ul", {
+    className: "side-bar-list",
+  });
 
   for (let i = 0; i < menu.length; i++) {
     let item = menu[i];
@@ -66,11 +71,131 @@ function toggleMobileMenu() {
     });
   }
 }
+function toggleMobilePlayer() {
+  let root = document.getElementById("root");
+  let playerContainer = addElement(root, "div", {
+    className: "mobile-fs-player slide-in-bottom",
+  });
+  let mbPlayerNav = addElement(playerContainer, "div", {
+    className: "mobile-fs-player-nav",
+  });
+  let chevronDown = addElement(mbPlayerNav, "button", {
+    className: "controls-button",
+    onclick: function () {
+      playerContainer.remove();
+    },
+  });
+  let chevronDownIcon = addElement(chevronDown, "i", {
+    className: "fas fa-chevron-down",
+  });
+  let albumName = addElement(mbPlayerNav, "div", {
+    innerText: album.name,
+    style: "color:#fff",
+  });
+  let moreButton = addElement(mbPlayerNav, "button", {
+    className: "controls-button",
+  });
+  let moreIcon = addElement(moreButton, "i", {
+    className: "fas fa-ellipsis-v",
+  });
+  let albumCoverContainer = addElement(playerContainer, "div", {
+    className: "w-100 fs-album-cover-container",
+  });
+  let albumCover = addElement(albumCoverContainer, "img", {
+    className: "card-container w-100",
+    src: album.cover,
+    style: "margin-top:3em;object-fit:center;max-width:500px;",
+  });
+
+  let songInfoContainer = addElement(playerContainer, "div", {
+    className: "songInfoContainer",
+  });
+  let title = addElement(songInfoContainer, "h4", {
+    innerText: album.songs[songIndex].name,
+  });
+  let likeButton = addElement(songInfoContainer, "button", {
+    className: "controls-button",
+  });
+  let likeIcon = addElement(likeButton, "i", {
+    className: icons.like,
+    style: "font-size:20pt",
+  });
+  let artistName = addElement(playerContainer, "h6", {
+    innerText: album.artist,
+  });
+  let progressContainer = addElement(playerContainer, "div", {
+    className: "progress-container w-100",
+    style: "height:100px;",
+  });
+  let currentTime = addElement(progressContainer, "div", {
+    innerText: "00:20",
+    className: "progress-time",
+    id: "current-time",
+  });
+  let progress = addElement(progressContainer, "input", {
+    type: "range",
+    value: 0,
+    id: "progress",
+    className: "progress-range",
+    onchange: function (e) {
+      onTimeChange(e.target.value);
+    },
+  });
+  let songDuration = addElement(progressContainer, "div", {
+    innerText: "04:50",
+    className: "progress-time",
+    id: "duration",
+  });
+  let controls = [
+    { text: "Shuffle", icon: icons.shuffle },
+    { text: "Backward", icon: icons.backward },
+    { text: "Play", icon: icons.play },
+    { text: "Forward", icon: icons.forward },
+    { text: "Repeat", icon: icons.repeat },
+  ];
+  let controller = addElement(playerContainer, "div", {
+    className: "controller",
+  });
+  let controlsContainer = addElement(controller, "div", {
+    className: "controls-container",
+  });
+  for (let i = 0; i < controls.length; i++) {
+    let control = controls[i];
+    let button = addElement(controlsContainer, "button", {
+      className: `controls-button ${control.text}`,
+      name: control.text,
+      onclick: function () {
+        if (control.text === "Play") {
+          play();
+        } else if (control.text === "Shuffle") {
+          switchSong(Math.ceil(Math.random() * album.songs.length - 1));
+        } else if (control.text === "Forward") {
+          switchSong(songIndex + 1);
+        } else if (control.text === "Backward") {
+          switchSong(songIndex - 1);
+        } else if (control.text === "Repeat") {
+          switchSong(songIndex);
+        } else {
+          alert(control.text);
+        }
+        title.innerText = album.songs[songIndex].name;
+      },
+    });
+    let icon = addElement(button, "i", {
+      className:
+        control.text === "Play"
+          ? isPlaying
+            ? icons.pause
+            : icons.play
+          : control.icon,
+      style: `font-size:${control.text === "Play" ? "5em" : "2em"}`,
+    });
+  }
+  return playerContainer;
+}
 // element should be replaced with the actual target element on which you have applied scroll, use window in case of no target element.
 function start(page) {
   createLayout();
-  createControllers();
-  initializePlayer(0);
   routeToPage(page);
 }
 function initializePlayer() {
@@ -95,12 +220,20 @@ async function switchSong(index) {
   if (index >= 0 && index <= album.songs.length - 1) {
     let currentTime = document.querySelector("#current-time");
     let title = document.querySelector(".song-info-title");
+    let songTitles = document.querySelectorAll(".song-info-text");
+    for (let i = 0; i < songTitles.length; i++) {
+      songTitles[i].id === `song-${index + 1}`
+        ? (songTitles[i].style.color = " #1ed760")
+        : (songTitles[i].style.color = "white");
+    }
     title.innerText = "";
+    currentSong = album.songs[songIndex].name;
+    songIndex = index;
     title.innerText =
       album.songs[songIndex].name.length > 20
         ? album.songs[songIndex].name.substring(0, 20) + " ..."
         : album.songs[songIndex].name;
-    songIndex = index;
+
     currentTime.innerText = "00:00";
     let player = document.getElementById("player");
     player.src = "./data/album/" + index + ".m4a";
@@ -113,25 +246,37 @@ async function switchSong(index) {
       currentTime.innerText = "00:00";
       duration.innerText = toHHMMSS(player.duration);
       play();
-
-      play();
+      isPlaying ? player.play() : play();
     };
   }
 }
 function play() {
   let player = document.getElementById("player");
   isPlaying ? player.pause() : player.play();
-  let playButton = document.querySelector("#Play");
-  playButton.firstChild.className = isPlaying
-    ? "fas fa-play-circle"
-    : "fas fa-pause-circle";
+  let playButtons = document.querySelectorAll(".Play");
+  for (button of playButtons) {
+    button.firstChild.className = isPlaying
+      ? "fas fa-play-circle"
+      : "fas fa-pause-circle";
+  }
+  let songTitles = document.querySelectorAll(".song-info-text");
+  for (let i = 0; i < songTitles.length; i++) {
+    songTitles[i].id === `song-${songIndex}`
+      ? (songTitles[i].style.color = " #1ed760")
+      : (songTitles[i].style.color = "white");
+  }
   isPlaying = !isPlaying;
   player.ontimeupdate = function () {
     let currentTime = document.querySelector("#current-time");
     currentTime.innerText = "00:00";
     currentTime.innerText = toHHMMSS(player.currentTime);
-    let progress = document.querySelector("#progress");
-    progress.value = Math.ceil((player.currentTime / player.duration) * 100);
+    let progresses = document.querySelectorAll(".progress-range");
+    progresses.forEach(
+      (progress) =>
+        (progress.value = Math.ceil(
+          (player.currentTime / player.duration) * 100
+        ))
+    );
   };
   player.onended = function () {
     isPlaying = !isPlaying;
@@ -168,20 +313,24 @@ function onVolumeToggle() {
 function updateScreenSizes() {
   device.width = window.innerWidth;
   device.height = window.innerHeight;
-
-  let progressContainer = document.querySelector(".progress-container");
+  let songInfo = document.querySelector(".songInfoContainer");
+  if (device.width <= 1024) {
+    songInfo.addEventListener("click", () => toggleMobilePlayer());
+  } else {
+    sonfInfo.removeEventListener("click", () => {});
+  }
 }
 function createLayout() {
   let root = document.querySelector("#root");
   root.innerHTML = "";
   root.style = `height:${device.height}px;`;
   let sideBar = addElement(root, "div", {
-    className: "side-bar d-none d-sm-block",
+    className: "side-bar d-none d-lg-block",
   });
 
   let container = addElement(root, "div", { className: "main-container" });
   let menuButton = addElement(root, "button", {
-    className: "controls-button mobile-menu-icon d-block d-sm-none",
+    className: "controls-button mobile-menu-icon d-block d-xl-none",
     onclick: function () {
       toggleMobileMenu();
     },
@@ -272,7 +421,6 @@ function createControllers() {
   let controllers = addElement(root, "div", { className: "controllers" });
 
   songInfo(controllers);
-
   playerControls(controllers);
   rightController(controllers);
 }
@@ -284,15 +432,16 @@ function playerControls(container) {
     { text: "Forward", icon: icons.forward },
     { text: "Repeat", icon: icons.repeat },
   ];
-  let controller = addElement(container, "div", { className: "controller" });
+  let controller = addElement(container, "div", {
+    className: "controller d-none d-lg-flex",
+  });
   let controlsContainer = addElement(controller, "div", {
     className: "controls-container",
   });
   for (let i = 0; i < controls.length; i++) {
     let control = controls[i];
     let button = addElement(controlsContainer, "button", {
-      id: control.text,
-      className: "controls-button",
+      className: `controls-button ${control.text}`,
       name: control.text,
       onclick: function () {
         if (control.text === "Play") {
@@ -327,6 +476,7 @@ function playerControls(container) {
     type: "range",
     value: 0,
     id: "progress",
+    className: "progress-range",
     onchange: function (e) {
       onTimeChange(e.target.value);
     },
@@ -342,6 +492,11 @@ function songInfo(container) {
   let songInfoContainer = addElement(container, "div", {
     className: "songInfoContainer",
   });
+  if (device.width <= 1024) {
+    songInfoContainer.addEventListener("click", () => toggleMobilePlayer());
+  } else {
+    songInfoContainer.removeEventListener("click", () => {});
+  }
   let albumCover = addElement(songInfoContainer, "button", {
     className: "controls-button",
     onclick: function () {
@@ -353,7 +508,8 @@ function songInfo(container) {
     src: albums[0].cover,
   });
   let songInfoText = addElement(songInfoContainer, "div", {
-    className: "song-info-text d-none d-md-flex",
+    className: "song-info-text",
+    style: "margin-right:3em;font-size:10pt;",
   });
   let title = addElement(songInfoText, "div", {
     className: "song-info-title",
@@ -369,12 +525,12 @@ function songInfo(container) {
       "color:lightgrey;font-size:10pt;font-weight:100;opacity:0.5;margin:0px;",
   });
   let likeButton = addElement(songInfoContainer, "button", {
-    className: "controls-button d-none d-md-flex",
+    className: "controls-button d-none d-lg-flex",
   });
   let likeIcon = addElement(likeButton, "i", { className: icons.like });
 
   let windowButton = addElement(songInfoContainer, "button", {
-    className: "controls-button d-none d-md-flex",
+    className: "controls-button d-none d-lg-flex",
   });
   let windowIcon = addElement(windowButton, "i", { className: icons.window });
 }
@@ -383,20 +539,21 @@ function rightController(container) {
   let rightControllerContainer = addElement(container, "div", {
     className: "rightControllerContainer",
   });
+
   let listButton = addElement(rightControllerContainer, "button", {
-    className: "controls-button d-none d-md-flex",
+    className: "controls-button d-none d-lg-flex",
   });
   let listIcon = addElement(listButton, "i", { className: icons.list });
 
   let desktopButton = addElement(rightControllerContainer, "button", {
-    className: "controls-button d-none d-md-flex",
+    className: "controls-button d-none d-lg-flex",
   });
   let desktopIcon = addElement(desktopButton, "i", {
     className: icons.desktop,
   });
 
   let volumeButton = addElement(rightControllerContainer, "button", {
-    className: "controls-button",
+    className: "controls-button d-none d-lg-flex",
     id: "Volume",
 
     onclick: function () {
@@ -406,10 +563,30 @@ function rightController(container) {
   let volumeIcon = addElement(volumeButton, "i", { className: icons.volume });
   let volumeBar = addElement(rightControllerContainer, "input", {
     type: "range",
-    className: "volume-bar d-none d-md-flex",
+    className: "volume-bar d-none d-lg-flex",
     onchange: function (e) {
       onVolumeChange(e.target.value);
     },
+  });
+  let playButton = addElement(rightControllerContainer, "button", {
+    className: "controls-button d-block d-lg-none Play",
+    style: "position:absolute;bottom:30px;right:30px;",
+    onclick: function () {
+      play();
+      isPlaying ? (playButton.firstChild.className = icons.pause) : icons.play;
+    },
+  });
+  let playIcon = addElement(playButton, "i", {
+    className: icons.play,
+    style: "font-size:25pt;",
+  });
+  let fsButton = addElement(rightControllerContainer, "button", {
+    className: "controls-button d-none d-lg-flex",
+    style: "margin-left:2em",
+  });
+  let fsIcon = addElement(fsButton, "i", { className: icons.fullscreen });
+  fsButton.addEventListener("click", function () {
+    toggleMobilePlayer();
   });
 }
 
@@ -446,41 +623,45 @@ function homePage() {
   ];
   createTab(container, tabs);
   let title = addElement(container, "h1", {
+    className: "d-none d-md-flex",
     innerText: "#TIMETRAVEL",
-    style: "margin-bottom:25px;",
+    style: "margin-bottom:25px;font-size:2vw;margin-left:20px;",
   });
   let row = addElement(container, "div", { className: "row" });
   for (let i = 0; i < list1.length; i++) {
     let item = list1[i];
     let col = addElement(row, "div", {
-      className: "col-md-6 col-lg-3 col-sm-12 col-xs-12 col-xl-3",
+      className: "col-md-6 col-lg-6 col-sm-12 col-xs-12 col-xl-2",
     });
     let cardContainer = addElement(col, "div", {
       className: "card-container",
     });
     let img = addElement(cardContainer, "img", {
       src: item.cover,
-      style: "margin-bottom:25px; max-width:400px;",
+      style: "margin-bottom:25px",
+      className: "w-75",
     });
     let text = addElement(cardContainer, "div", { innerText: item.name });
   }
 
   let secondTitle = addElement(container, "h1", {
+    className: "d-none d-md-flex",
     innerText: "WHILE YOU CODE",
-    style: "margin-bottom:25px;",
+    style: "margin-bottom:25px;font-size:2vw;margin-left:20px;",
   });
   let secondRow = addElement(container, "div", { className: "row" });
   for (let i = 0; i < list2.length; i++) {
     let item = list2[i];
     let col = addElement(secondRow, "div", {
-      className: "col-md-6 col-lg-3 col-sm-12 col-xs-12 col-xl-3",
+      className: "col-md-6 col-lg-6 col-sm-12 col-xs-12 col-xl-2",
     });
     let cardContainer = addElement(col, "div", {
       className: "card-container",
     });
     let img = addElement(cardContainer, "img", {
       src: item.cover,
-      style: "max-width:400px;margin-bottom:25px;",
+      className: "w-75",
+      style: "margin-bottom:25px;",
     });
     let text = addElement(cardContainer, "div", { innerText: item.name });
   }
@@ -490,6 +671,7 @@ function detailsPage() {
   let container = document.querySelector(".main-container");
   container.innerHTML = "";
   container.className = "main-container";
+  container.innerHTML = "";
   let row = addElement(container, "div", { className: "row" });
   let leftCol = addElement(row, "div", {
     className: "col-md-12 col-sm-12 col-xl-4 col-lg-4 left-col",
@@ -548,7 +730,7 @@ function detailsPage() {
   let moreIcon = addElement(moreButton, "i", { className: icons.more });
 
   let rightCol = addElement(row, "div", {
-    className: "col-md-12 col-sm-12 col-xs-12  col-lg-6 col-xl-6 right-col",
+    className: "col-md-12 col-sm-12 col-xs-12  col-lg-8 col-xl-8 right-col",
   });
   for (let i = 0; i < album.songs.length; i++) {
     let song = album.songs[i];
@@ -561,19 +743,26 @@ function detailsPage() {
     });
     let div = addElement(songContainer, "div", { className: "song-left" });
     let icon = addElement(div, "i", { className: "fas fa-music" });
-    let text = addElement(div, "div", { className: "song-info-text" });
+    let text = addElement(div, "div", {
+      id: `song-${i}`,
+      className: "song-info-text",
+      style: `color:${i === songIndex ? "#1ed760" : "#fff"}`,
+    });
     let songName = addElement(text, "div", {
       innerText: song.name,
     });
     let artistName = addElement(text, "button", {
-      className: "controls-button",
+      className: "controls-button d-none d-md-flex",
       innerText: album.artist,
       style: "margin:0px;",
       onclick: function () {
         bandDetailPage();
       },
     });
-    let duration = addElement(songContainer, "div", { innerText: song.length });
+    let duration = addElement(songContainer, "div", {
+      innerText: song.length,
+      className: "d-none d-md-flex",
+    });
   }
 }
 function loginPage() {
@@ -703,7 +892,7 @@ function bandDetailPage() {
     className:
       "mx-auto primary-button col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3",
     innerText: "PLAY",
-    style: "margin:20px 0px;width:100%;min-width:100px;",
+    style: "margin:20px 0px;width:100%;min-width:8vw;",
     onclick: function () {
       play();
     },
@@ -712,7 +901,7 @@ function bandDetailPage() {
     className:
       "mx-auto secondary-button col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3",
     innerText: "FOLLOW",
-    style: "margin:20px;width:100%;min-width:100px;",
+    style: "margin:20px;width:100%;min-width:8vw;",
   });
   let moreButton = addElement(buttonContainer, "button", {
     className:
