@@ -19,4 +19,5 @@ const icons = {
   lock: "fas fa-lock",
   more: "fas fa-ellipsis-h",
   fullscreen: "fas fa-compress",
+  spinner: "fas fa-circle-notch fa-spin",
 };

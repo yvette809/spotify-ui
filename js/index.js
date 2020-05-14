@@ -3,7 +3,7 @@ let device = {
   height: window.innerHeight,
 };
 var lastScrollTop = 0;
-
+let loading = false;
 let activePage = "Home";
 let currentSong = {};
 let isPlaying = false;
@@ -195,7 +195,9 @@ function toggleMobilePlayer() {
     let icon = addElement(button, "i", {
       className:
         control.text === "Play"
-          ? isPlaying
+          ? loading
+            ? icons.spinner
+            : isPlaying
             ? icons.pause
             : icons.play
           : control.icon,
@@ -210,6 +212,7 @@ function start(page) {
   routeToPage(page);
 }
 function initializePlayer() {
+  loading = true;
   let root = document.querySelector("#player-area");
   let player = addElement(root, "audio", { id: "player" });
   player.source = null;
@@ -225,9 +228,16 @@ function initializePlayer() {
     let currentTime = document.querySelector("#current-time");
     currentTime.innerText = "00:00";
     duration.innerText = toHHMMSS(player.duration);
+    loading = false;
   };
 }
 async function switchSong(index) {
+  loading = true;
+  let playButtons = document.querySelectorAll(".Play");
+  for (button of playButtons) {
+    button.firstChild.className = icons.spinner;
+    button.firstChild.style = "color:#1ed760;font-size:20pt;";
+  }
   if (index >= 0 && index <= album.songs.length - 1) {
     let currentTime = document.querySelector("#current-time");
     let title = document.querySelector(".song-info-title");
@@ -258,6 +268,7 @@ async function switchSong(index) {
       duration.innerText = toHHMMSS(player.duration);
       play();
       isPlaying ? player.play() : play();
+      loading = false;
     };
   }
 }
