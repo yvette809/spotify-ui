@@ -98,13 +98,12 @@ function toggleMobilePlayer() {
   let moreIcon = addElement(moreButton, "i", {
     className: "fas fa-ellipsis-v",
   });
-  let albumCoverContainer = addElement(playerContainer, "div", {
-    className: "w-100 fs-album-cover-container",
-  });
-  let albumCover = addElement(albumCoverContainer, "img", {
+
+  let albumCover = addElement(playerContainer, "img", {
     className: "card-container",
     src: album.cover,
-    style: "margin-top:3em;object-fit:center;width:75%;border-radius:10px;",
+    style:
+      "margin-top:3em;object-fit:center;width:50vw;max-width:500px;border-radius:0px;",
   });
 
   let songInfoContainer = addElement(playerContainer, "div", {
