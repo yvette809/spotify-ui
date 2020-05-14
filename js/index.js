@@ -102,9 +102,9 @@ function toggleMobilePlayer() {
     className: "w-100 fs-album-cover-container",
   });
   let albumCover = addElement(albumCoverContainer, "img", {
-    className: "card-container w-100",
+    className: "card-container",
     src: album.cover,
-    style: "margin-top:3em;object-fit:center;max-width:500px;",
+    style: "margin-top:3em;object-fit:center;width:75%;border-radius:10px;",
   });
 
   let songInfoContainer = addElement(playerContainer, "div", {
