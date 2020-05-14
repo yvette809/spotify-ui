@@ -392,10 +392,7 @@ function createSideBarMenu() {
   let authButtons = addElement(sideBar, "div", {
     className: "auth-buttons",
   });
-  let installApp = addElement(authButtons, "div", {
-    innerHTML: `<i class="fas fa-arrow-circle-down"></i> Install app`,
-    style: "cursor:pointer;",
-  });
+
   let signUpButton = addElement(authButtons, "button", {
     className: "primary-button",
     innerText: "SIGN UP",
@@ -412,6 +409,13 @@ function createSideBarMenu() {
     onclick: function () {
       loginPage();
     },
+  });
+  let project = addElement(authButtons, "a", {
+    className: "controls-button",
+    innerHTML: `<i style="margin-right:1em;" class="fab fa-github"></i> Spotify UI`,
+    style: "margin:10px 0px;height:30px;width:90%;",
+    href: "https://github.com/ubeytdemirr/spotify-ui",
+    target: "blank",
   });
 }
 function createControllers() {
