@@ -221,7 +221,7 @@ async function switchSong(index) {
     let title = document.querySelector(".song-info-title");
     let songTitles = document.querySelectorAll(".song-info-text");
     for (let i = 0; i < songTitles.length; i++) {
-      songTitles[i].id === `song-${index + 1}`
+      songTitles[i].id === `song-${index}`
         ? (songTitles[i].style.color = " #1ed760")
         : (songTitles[i].style.color = "white");
     }
