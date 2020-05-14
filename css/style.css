@@ -328,9 +328,16 @@ body {
   color: #1ed760;
 }
 
+.wrapper-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  width: 100%;
+}
+
 .song-info-title {
   color: white;
-  width: 500px;
 }
 .song-info-title:hover {
   color: #1ed760;

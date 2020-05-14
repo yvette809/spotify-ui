@@ -90,7 +90,12 @@ function toggleMobilePlayer() {
   });
   let albumName = addElement(mbPlayerNav, "div", {
     innerText: album.name,
-    style: "color:#fff",
+    style: "color:#fff;cursor:pointer;",
+  });
+
+  albumName.addEventListener("click", function () {
+    detailsPage();
+    playerContainer.remove();
   });
   let moreButton = addElement(mbPlayerNav, "button", {
     className: "controls-button",
@@ -103,11 +108,13 @@ function toggleMobilePlayer() {
     className: "card-container",
     src: album.cover,
     style:
-      "margin-top:3em;object-fit:center;width:50vw;max-width:500px;border-radius:0px;",
+      "margin-top:3em;object-fit:center;width:90vw;max-width:500px;border-radius:0px;",
   });
-
-  let songInfoContainer = addElement(playerContainer, "div", {
-    className: "songInfoContainer",
+  let div = addElement(playerContainer, "div", {
+    className: "w-100",
+  });
+  let songInfoContainer = addElement(div, "div", {
+    className: "wrapper-info",
   });
   let title = addElement(songInfoContainer, "h4", {
     innerText: album.songs[songIndex].name,
@@ -119,8 +126,13 @@ function toggleMobilePlayer() {
     className: icons.like,
     style: "font-size:20pt",
   });
-  let artistName = addElement(playerContainer, "h6", {
+  let artistName = addElement(div, "h6", {
     innerText: album.artist,
+    style: "cursor:pointer;",
+  });
+  artistName.addEventListener("click", function () {
+    bandDetailPage();
+    playerContainer.remove();
   });
   let progressContainer = addElement(playerContainer, "div", {
     className: "progress-container w-100",
