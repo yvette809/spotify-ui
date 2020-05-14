@@ -741,7 +741,6 @@ function detailsPage() {
       className: "song-container",
       onclick: async function () {
         await switchSong(i);
-        await switchSong(i);
       },
     });
     let div = addElement(songContainer, "div", { className: "song-left" });
