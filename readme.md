@@ -14,7 +14,7 @@ This project is the first build week project of Strive School to practise our sk
 
 Login page has options to use login services such as apple and facebook.
 
-[!LOGIN](./screenshots/login.PNG)
+![LOGIN](./screenshots/login.PNG)
 
 ### HOME PAGE
 
@@ -26,23 +26,23 @@ Home page contains albums/playlists of user.
 
 Artist page is aiming to give information abou artist and showing their discography.
 
-[!ARTIST](./screenshots/artist-details.page.PNG)
+![ARTIST](./screenshots/artist-details.page.PNG)
 
 ### ALBUM PAGE
 
 Album page contains name , songs of album , release date and cover.
 Album songs are interactable with player.
 
-[!ALBUM](./screenshots/album-details.PNG)
+![ALBUM](./screenshots/album-details.PNG)
 
 #### ADDITIONAL FEATURES
 
 Fullscreen Player
 
-[!FullScreen](./screenshots/fs-player.PNG)
+![FullScreen](./screenshots/fs-player.PNG)
 
-[!Fullscreen](./screenshots/mobile-fs.PNG)
+![Fullscreen](./screenshots/mobile-fs.PNG)
 
 Fullscreen Mobile Menu
 
-[!Fullscreen](./screenshots/mobile-menu.PNG)
+![Fullscreen](./screenshots/mobile-menu.PNG)
